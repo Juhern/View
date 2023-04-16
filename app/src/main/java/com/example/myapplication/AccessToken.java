@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -15,6 +16,7 @@ public class AccessToken {
 
     /**
      * 获取权限token
+     *
      * @return 返回示例：
      * {
      * "access_token": "24.460da4889caad24cccdb1fea17221975.2592000.1491995545.282335-1234567",
@@ -23,15 +25,16 @@ public class AccessToken {
      */
     public static String getAuth() {
         // 官网获取的 API Key 更新为你注册的
-        String clientId = "";
+        String clientId = "b64RNoh9ANQGacP0On6SoG46";
         // 官网获取的 Secret Key 更新为你注册的
-        String clientSecret = "";
+        String clientSecret = "on3svuduH3mMNj3iGeZCWgKbdSybBj6m";
         return getAuth(clientId, clientSecret);
     }
 
     /**
      * 获取API访问token
      * 该token有一定的有效期，需要自行管理，当失效时需重新获取.
+     *
      * @param ak - 百度云官网获取的 API Key
      * @param sk - 百度云官网获取的 Securet Key
      * @return assess_token 示例：
@@ -44,9 +47,9 @@ public class AccessToken {
                 // 1. grant_type为固定参数
                 + "grant_type=client_credentials"
                 // 2. 官网获取的 API Key
-                + "&client_id=" + ak
+                + "&client_id=" + "b64RNoh9ANQGacP0On6SoG46"
                 // 3. 官网获取的 Secret Key
-                + "&client_secret=" + sk;
+                + "&client_secret=" + "on3svuduH3mMNj3iGeZCWgKbdSybBj6m";
         try {
             URL realUrl = new URL(getAccessTokenUrl);
             // 打开和URL之间的连接

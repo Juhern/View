@@ -36,18 +36,18 @@ import java.net.URLEncoder;
 public class Camera extends Activity {
     private ImageView cameraPicture;
     public static final int TAKE_PHOTO = 1;
-    private Button pictureSave=null;
+    private Button pictureSave = null;
     private Uri imageUri;
     private String uriden;
     private String token;
     private String pathiden;
     private String resultden;
     @SuppressLint("HandlerLeak")
-    Handler handler = new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            if(msg.what == 0x123){
-                Toast.makeText(getApplicationContext(),"文档生成成功！",Toast.LENGTH_SHORT).show();
+            if (msg.what == 0x123) {
+                Toast.makeText(getApplicationContext(), "文档生成成功！", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -56,7 +56,7 @@ public class Camera extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.camera);
 
-        pictureSave=findViewById(R.id.pictureSave);
+        pictureSave = findViewById(R.id.pictureSave);
         cameraPicture = findViewById(R.id.picture);
 
         // 创建一个File对象，用于保存摄像头拍下的图片，这里把图片命名为output_image.jpg
@@ -85,16 +85,16 @@ public class Camera extends Activity {
         }
         // 动态申请权限
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.CAMERA}, TAKE_PHOTO);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, TAKE_PHOTO);
         } else {
             // 启动相机程序
             startCamera();
         }
 
 
-        pictureSave.setOnClickListener(new Camera.pictureSaveFunction());
+        pictureSave.setOnClickListener(new pictureSaveFunction());
 
-        Button button1=findViewById(R.id.pictureback);
+        Button button1 = findViewById(R.id.pictureback);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,39 +105,38 @@ public class Camera extends Activity {
         });
 
         /*文字识别*/
-        Button button2=findViewById(R.id.pictureIdentity);
+        Button button2 = findViewById(R.id.pictureIdentity);
         button2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    System.out.println(uriden);
-                    new Thread(){
-                        @Override
-                        public void run() {
-                            resultden=accurateBasic(uriden);
-                            if (Build.VERSION.SDK_INT >= 23) {
-                                int REQUEST_CODE_CONTACT = 101;
-                                String[] permissions = {
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                                //验证是否许可权限
-                                for (String str : permissions) {
-                                    if (Camera.this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
-                                        //申请权限
-                                        Camera.this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
-                                        return;
-                                    } else {
-                                        FileLog fileLog=new FileLog();
-                                        fileLog.saveLog("报告",resultden,"安排");
-                                        handler.sendEmptyMessage(0x123);
-                                    }
+            @Override
+            public void onClick(View v) {
+                System.out.println(uriden);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        resultden = accurateBasic(uriden);
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            int REQUEST_CODE_CONTACT = 101;
+                            String[] permissions = {
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                            //验证是否许可权限
+                            for (String str : permissions) {
+                                if (Camera.this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+                                    //申请权限
+                                    Camera.this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
+                                    return;
+                                } else {
+                                    FileLog fileLog = new FileLog();
+                                    fileLog.saveLog("报告", resultden, "安排");
+                                    handler.sendEmptyMessage(0x123);
                                 }
-
                             }
-                        }
-                    }.start();
-                    System.out.println(resultden);
-                }
-        });
 
+                        }
+                    }
+                }.start();
+                System.out.println(resultden);
+            }
+        });
 
 
     }
@@ -152,11 +151,11 @@ public class Camera extends Activity {
 
 
     private class pictureSaveFunction implements View.OnClickListener {
-        public void onClick(View view){
+        public void onClick(View view) {
             BitmapDrawable bmpDrawable = (BitmapDrawable) cameraPicture.getDrawable();
             Bitmap bitmap = bmpDrawable.getBitmap();
             saveToSystemGallery(bitmap);//将图片保存到本地
-            Toast.makeText(getApplicationContext(),"图片保存成功！",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "图片保存成功！", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -164,7 +163,7 @@ public class Camera extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
             case TAKE_PHOTO:
-                if (requestCode == TAKE_PHOTO && resultCode == RESULT_OK ) {
+                if (requestCode == TAKE_PHOTO && resultCode == RESULT_OK) {
                     try {
                         // 将图片解析成Bitmap对象
                         Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
@@ -178,6 +177,7 @@ public class Camera extends Activity {
                 break;
         }
     }
+
     public void saveToSystemGallery(Bitmap bmp) {
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), "cinema");
@@ -210,15 +210,15 @@ public class Camera extends Activity {
         Uri uri = Uri.fromFile(file);
         intent.setData(uri);
         sendBroadcast(intent);// 发送广播，通知图库更新
-        uriden=uri.getPath();
+        uriden = uri.getPath();
     }
 
 
     /*识别方法*/
-    public  String accurateBasic(String uripath) {
+    public String accurateBasic(String uripath) {
         // 请求url
-        AccessToken accessToken1=new AccessToken();
-        token=accessToken1.getAuth();
+        AccessToken accessToken1 = new AccessToken();
+        token = accessToken1.getAuth();
 
 
         String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic";

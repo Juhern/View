@@ -11,11 +11,12 @@ import java.util.Locale;
 public class FileLog {
     /**
      * 保存日志到本地存储根目录下
+     *
      * @param message      保存的信息
      * @param fileName     保存的文件名称
      * @param messageTitle 保存的信息标题
      */
-    public static void saveLog(String messageTitle,String message, String fileName) {
+    public static void saveLog(String messageTitle, String message, String fileName) {
         String path = Environment.getExternalStorageDirectory() + "/MyLog";
         File files = new File(path);
         Date date = new Date();

@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -17,15 +18,15 @@ public class MainActivity extends AppCompatActivity {
     public static final int TAKE_PHOTO = 1;
     public static final int CHOOSE_PHOTO = 2;
     private ImageView picture;
-    private Intent intent1,intent2,intent3;
+    private Intent intent1, intent2, intent3;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
         Button chooseFromAlbum = findViewById(R.id.choose_from_album);
@@ -56,22 +57,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        intent1=new Intent(this,Albums.class);//创建跳转到Albums显示的窗口的Intent
-        intent2=new Intent(this,Camera.class);//创建跳转到Camera显示的窗口的Intent
+        intent1 = new Intent(this, Albums.class);//创建跳转到Albums显示的窗口的Intent
+        intent2 = new Intent(this, Camera.class);//创建跳转到Camera显示的窗口的Intent
 
 
     }
-
-
 
 
     private void openAlbum() {
         startActivity(intent1);//进入album的窗口界面
     }
+
     private void startCamera() {
         startActivity(intent2);//进入camera的窗口界面
     }
-
 
 
 }

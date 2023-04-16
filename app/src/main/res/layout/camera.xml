@@ -1,53 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/pictureSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="保存图像"
-        android:textColor="#FFFFFF"
-        android:layout_marginLeft="20dp"
-        android:background="#13277a"
-        android:gravity="center"
-        android:textSize="20dp" />
+            android:id="@+id/pictureSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="保存图像"
+            android:textColor="#FFFFFF"
+            android:layout_marginLeft="20dp"
+            android:background="#13277a"
+            android:gravity="center"
+            android:textSize="20dp"/>
 
     <Button
-        android:id="@+id/pictureIdentity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="文字识别"
-        android:textColor="#FFFFFF"
-        android:background="#13277a"
-        android:gravity="center"
-        android:layout_marginLeft="140dp"
-        android:textSize="20dp" />
+            android:id="@+id/pictureIdentity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="文字识别"
+            android:textColor="#FFFFFF"
+            android:background="#13277a"
+            android:gravity="center"
+            android:layout_marginLeft="140dp"
+            android:textSize="20dp"/>
 
     <Button
-        android:id="@+id/pictureback"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="返回"
-        android:textColor="#FFFFFF"
-        android:background="#13277a"
-        android:gravity="center"
-        android:layout_toRightOf="@+id/pestDetection"
-        android:layout_marginLeft="260dp"
-        android:textSize="20dp" />
+            android:id="@+id/pictureback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="返回"
+            android:textColor="#FFFFFF"
+            android:background="#13277a"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/pictureIdentity"
+            android:layout_marginLeft="40dp"
+            android:textSize="20dp"/>
 
     <ImageView
-        android:id="@+id/picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/pictureSave"
-        android:layout_marginTop="0dp" />
-
+            android:id="@+id/picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/pictureSave"
+            android:layout_marginTop="0dp"/>
 
 
 </RelativeLayout>

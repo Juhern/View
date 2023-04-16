@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -30,24 +31,24 @@ import androidx.core.content.ContextCompat;
 import java.net.URLEncoder;
 
 public class Albums extends Activity {
-    private  ImageView albumsPicture;
+    private ImageView albumsPicture;
     public static final int CHOOSE_PHOTO = 2;
-    private Button button1,button2;
+    private Button button1, button2;
     private String token;
     private String pathiden;
     private String resultden;
     @SuppressLint("HandlerLeak")
-Handler handler = new Handler(){
-    @Override
-    public void handleMessage(@NonNull Message msg) {
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
 //        resultden =
-    }
-};
+        }
+    };
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.albums);
         albumsPicture = super.findViewById(R.id.picture);
-
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -57,14 +58,14 @@ Handler handler = new Handler(){
         }
 
         /*文字识别部分*/
-        button1=findViewById(R.id.pictureIdentity2);
+        button1 = findViewById(R.id.pictureIdentity2);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(){
+                new Thread() {
                     @Override
                     public void run() {
-                        resultden=accurateBasic(pathiden);
+                        resultden = accurateBasic(pathiden);
                         if (Build.VERSION.SDK_INT >= 23) {
                             int REQUEST_CODE_CONTACT = 101;
                             String[] permissions = {
@@ -76,9 +77,12 @@ Handler handler = new Handler(){
                                     Albums.this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
                                     return;
                                 } else {
-                                    FileLog fileLog=new FileLog();
-                                    fileLog.saveLog("报告",resultden,"安排");
-                                    Toast.makeText(getApplicationContext(),"文档生成成功！",Toast.LENGTH_SHORT).show();
+                                    FileLog fileLog = new FileLog();
+                                    fileLog.saveLog("报告", resultden, "安排");
+                                    Looper.prepare();
+                                    Toast.makeText(getApplicationContext(), "文档生成成功！", Toast.LENGTH_SHORT).show();
+                                    Looper.loop();
+
                                 }
                             }
 
@@ -90,16 +94,15 @@ Handler handler = new Handler(){
             }
         });
 
-        button2=findViewById(R.id.pictureback2);
+        button2 = findViewById(R.id.pictureback2);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(v.getContext(),MainActivity.class);
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
-
 
 
     }
@@ -109,7 +112,6 @@ Handler handler = new Handler(){
         intent.setType("image/*");
         startActivityForResult(intent, CHOOSE_PHOTO);//打开相册
     }
-
 
 
     // 使用startActivityForResult()方法开启Intent的回调
@@ -129,6 +131,7 @@ Handler handler = new Handler(){
                 break;
         }
     }
+
     @TargetApi(19)
     private void handleImageOnKitkat(Intent data) {
         String imagePath = null;
@@ -139,7 +142,7 @@ Handler handler = new Handler(){
             if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
                 String id = docId.split(":")[1];
                 String selection = MediaStore.Images.Media._ID + "=" + id;
-                imagePath = getImagePath( MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+                imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
             } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
                 Uri contentUri = ContentUris.withAppendedId(Uri.parse("content:" +
                         "//downloads/public_downloads"), Long.valueOf(docId));
@@ -154,40 +157,42 @@ Handler handler = new Handler(){
         }
         //根据图片路径显示图片
         displayImage(imagePath);
-        pathiden=imagePath;
+        pathiden = imagePath;
     }
 
-    private void handleImageBeforeKitKat(Intent data){
-        Uri uri=data.getData();
-        String imagePath=getImagePath(uri,null);
+    private void handleImageBeforeKitKat(Intent data) {
+        Uri uri = data.getData();
+        String imagePath = getImagePath(uri, null);
         displayImage(imagePath);
     }
-    private String getImagePath(Uri uri,String selection){
-        String path=null;
-        Cursor cursor=getContentResolver().query(uri,null,selection,null,null);
-        if(cursor!=null){
-            if(cursor.moveToFirst()){
-                path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
             }
             cursor.close();
         }
         return path;
     }
-    private void displayImage(String imagePath){
-        if(imagePath!=null){
-            Bitmap bitmap=BitmapFactory.decodeFile(imagePath);
+
+    private void displayImage(String imagePath) {
+        if (imagePath != null) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             albumsPicture.setImageBitmap(bitmap);//将图片放置在控件上
-        }else {
-            Toast.makeText(this,"得到图片失败",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "得到图片失败", Toast.LENGTH_SHORT).show();
         }
     }
 
 
     /*识别方法*/
-    public  String accurateBasic(String uripath) {
+    public String accurateBasic(String uripath) {
         // 请求url
-        AccessToken accessToken1=new AccessToken();
-        token=accessToken1.getAuth();
+        AccessToken accessToken1 = new AccessToken();
+        token = accessToken1.getAuth();
 
 
         String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic";
