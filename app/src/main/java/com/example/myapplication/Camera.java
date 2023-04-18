@@ -32,6 +32,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Camera extends Activity {
     private ImageView cameraPicture;
@@ -42,6 +44,7 @@ public class Camera extends Activity {
     private String token;
     private String pathiden;
     private String resultden;
+    private List<String> result = new LinkedList<>();
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
@@ -88,6 +91,15 @@ public class Camera extends Activity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, TAKE_PHOTO);
         } else {
             // 启动相机程序
+//            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager()){
+//                Toast.makeText(this,"已获得访问所有文件权限",Toast.LENGTH_SHORT).show();
+//            }else{
+//                Object builder = new AlertDialog.Builder(this).setMessage("本程序需要您同意允许访问所有文件权限").setPositiveButton("确定",intent){
+//                    Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+//                    startActivity(intent);
+//                }
+//                ((AlertDialog.Builder) builder).show();
+//            }
             startCamera();
         }
 
@@ -114,6 +126,13 @@ public class Camera extends Activity {
                     @Override
                     public void run() {
                         resultden = accurateBasic(uriden);
+//                        AlBean resultBean = new Gson().fromJson(resultden,AlBean.class);
+//                        System.out.println(resultBean.getWords_result());
+//                        for (AlBean.Pdf pdf: resultBean.getWords_result()) {
+//                            System.out.println(pdf.getWords());
+//                            result.add(pdf.getWords()+"\n");
+//                        }
+//                        resultden = result.toString();
                         if (Build.VERSION.SDK_INT >= 23) {
                             int REQUEST_CODE_CONTACT = 101;
                             String[] permissions = {

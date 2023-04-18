@@ -29,6 +29,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.net.URLEncoder;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Albums extends Activity {
     private ImageView albumsPicture;
@@ -37,11 +39,12 @@ public class Albums extends Activity {
     private String token;
     private String pathiden;
     private String resultden;
+
+    private List<String> result = new LinkedList<>();
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
-//        resultden =
         }
     };
 
@@ -66,6 +69,13 @@ public class Albums extends Activity {
                     @Override
                     public void run() {
                         resultden = accurateBasic(pathiden);
+//                        AlBean resultBean = new Gson().fromJson(resultden,AlBean.class);
+//                        System.out.println(resultBean.getWords_result());
+//                        for (AlBean.Pdf pdf: resultBean.getWords_result()) {
+//                            System.out.println(pdf.getWords());
+//                            result.add(pdf.getWords()+"\n");
+//                        }
+//                        resultden = result.toString();
                         if (Build.VERSION.SDK_INT >= 23) {
                             int REQUEST_CODE_CONTACT = 101;
                             String[] permissions = {
