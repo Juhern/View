@@ -27,6 +27,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -126,13 +128,14 @@ public class Camera extends Activity {
                     @Override
                     public void run() {
                         resultden = accurateBasic(uriden);
-//                        AlBean resultBean = new Gson().fromJson(resultden,AlBean.class);
-//                        System.out.println(resultBean.getWords_result());
-//                        for (AlBean.Pdf pdf: resultBean.getWords_result()) {
-//                            System.out.println(pdf.getWords());
-//                            result.add(pdf.getWords()+"\n");
-//                        }
-//                        resultden = result.toString();
+                        /*处理返回的字符串*/
+                        AlBean resultBean = new Gson().fromJson(resultden,AlBean.class);
+                        System.out.println(resultBean.getWords_result());
+                        for (AlBean.Pdf pdf: resultBean.getWords_result()) {
+                            System.out.println(pdf.getWords());
+                            result.add(pdf.getWords());
+                        }
+                        resultden = result.toString();
                         if (Build.VERSION.SDK_INT >= 23) {
                             int REQUEST_CODE_CONTACT = 101;
                             String[] permissions = {

@@ -25,9 +25,9 @@ public class AccessToken {
      */
     public static String getAuth() {
         // 官网获取的 API Key 更新为你注册的
-        String clientId = "b64RNoh9ANQGacP0On6SoG46";
+        String clientId = "M1FyNd1QhhkHLq3izjdCxYOk";
         // 官网获取的 Secret Key 更新为你注册的
-        String clientSecret = "on3svuduH3mMNj3iGeZCWgKbdSybBj6m";
+        String clientSecret = "nBTfkWVuaIK1jGoDbWku9kSSqtLYzStl";
         return getAuth(clientId, clientSecret);
     }
 
@@ -47,9 +47,9 @@ public class AccessToken {
                 // 1. grant_type为固定参数
                 + "grant_type=client_credentials"
                 // 2. 官网获取的 API Key
-                + "&client_id=" + "b64RNoh9ANQGacP0On6SoG46"
+                + "&client_id=" + "M1FyNd1QhhkHLq3izjdCxYOk"
                 // 3. 官网获取的 Secret Key
-                + "&client_secret=" + "on3svuduH3mMNj3iGeZCWgKbdSybBj6m";
+                + "&client_secret=" + "nBTfkWVuaIK1jGoDbWku9kSSqtLYzStl";
         try {
             URL realUrl = new URL(getAccessTokenUrl);
             // 打开和URL之间的连接

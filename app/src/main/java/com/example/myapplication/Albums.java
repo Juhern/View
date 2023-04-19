@@ -28,6 +28,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.gson.Gson;
+
 import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,13 +71,14 @@ public class Albums extends Activity {
                     @Override
                     public void run() {
                         resultden = accurateBasic(pathiden);
-//                        AlBean resultBean = new Gson().fromJson(resultden,AlBean.class);
-//                        System.out.println(resultBean.getWords_result());
-//                        for (AlBean.Pdf pdf: resultBean.getWords_result()) {
-//                            System.out.println(pdf.getWords());
-//                            result.add(pdf.getWords()+"\n");
-//                        }
-//                        resultden = result.toString();
+                        /*处理返回的字符串*/
+                        AlBean resultBean = new Gson().fromJson(resultden,AlBean.class);
+                        System.out.println(resultBean.getWords_result());
+                        for (AlBean.Pdf pdf: resultBean.getWords_result()) {
+                            System.out.println(pdf.getWords());
+                            result.add(pdf.getWords());
+                        }
+                        resultden = result.toString();
                         if (Build.VERSION.SDK_INT >= 23) {
                             int REQUEST_CODE_CONTACT = 101;
                             String[] permissions = {
