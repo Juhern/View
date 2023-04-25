@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -41,6 +42,8 @@ public class Albums extends Activity {
     private String token;
     private String pathiden;
     private String resultden;
+    //弹窗显示
+    private AlertDialog mAlertDialog = null;
 
     private List<String> result = new LinkedList<>();
     @SuppressLint("HandlerLeak")
@@ -62,6 +65,8 @@ public class Albums extends Activity {
             openAlbum();
         }
 
+
+
         /*文字识别部分*/
         button1 = findViewById(R.id.pictureIdentity2);
         button1.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +84,25 @@ public class Albums extends Activity {
                             result.add(pdf.getWords());
                         }
                         resultden = result.toString();
+                        /*
+                        在不同的线程中处理返回的字符串，例如在一个异步任务中，需要确保在主线程中更新UI。
+                        可以使用runOnUiThread()方法来更新UI
+                        */
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+//                                 在主线程中更新UI
+                                final CustomDialog mDialog = new CustomDialog(Albums.this, "识别结果", resultden, "确定", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Toast.makeText(getApplicationContext(), "这是你的生成结果", Toast.LENGTH_SHORT).show();
+                                    }
+                                },"取消");
+                                mDialog.setCanceledOnTouchOutside(false);
+                                mDialog.show();
+                            }
+                        });
+
                         if (Build.VERSION.SDK_INT >= 23) {
                             int REQUEST_CODE_CONTACT = 101;
                             String[] permissions = {
@@ -95,15 +119,14 @@ public class Albums extends Activity {
                                     Looper.prepare();
                                     Toast.makeText(getApplicationContext(), "文档生成成功！", Toast.LENGTH_SHORT).show();
                                     Looper.loop();
-
                                 }
                             }
 
                         }
 
+
                     }
                 }.start();
-
             }
         });
 
@@ -111,6 +134,7 @@ public class Albums extends Activity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
