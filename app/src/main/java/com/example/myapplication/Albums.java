@@ -31,7 +31,6 @@ import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 
-import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,6 +49,9 @@ public class Albums extends Activity {
     Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
+            if (msg.what == 0x123) {
+                Toast.makeText(getApplicationContext(), "文档生成成功！", Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
@@ -75,7 +77,8 @@ public class Albums extends Activity {
                 new Thread() {
                     @Override
                     public void run() {
-                        resultden = accurateBasic(pathiden);
+                        ocrPost ocrpost = new ocrPost();
+                        resultden = ocrpost.accurateBasic(pathiden);
                         /*处理返回的字符串*/
                         AlBean resultBean = new Gson().fromJson(resultden,AlBean.class);
                         System.out.println(resultBean.getWords_result());
@@ -115,7 +118,7 @@ public class Albums extends Activity {
                                     return;
                                 } else {
                                     FileLog fileLog = new FileLog();
-                                    fileLog.saveLog("报告", resultden, "安排");
+                                    fileLog.saveLog("报告", resultden, "识别结果");
                                     Looper.prepare();
                                     Toast.makeText(getApplicationContext(), "文档生成成功！", Toast.LENGTH_SHORT).show();
                                     Looper.loop();
@@ -127,6 +130,7 @@ public class Albums extends Activity {
 
                     }
                 }.start();
+                System.out.println(resultden);
             }
         });
 
@@ -140,7 +144,6 @@ public class Albums extends Activity {
                 finish();
             }
         });
-
 
     }
 
@@ -224,34 +227,6 @@ public class Albums extends Activity {
         }
     }
 
-
-    /*识别方法*/
-    public String accurateBasic(String uripath) {
-        // 请求url
-        AccessToken accessToken1 = new AccessToken();
-        token = accessToken1.getAuth();
-
-
-        String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic";
-        try {
-            // 本地文件路径
-            String filePath = uripath;
-            byte[] imgData = FileUtil.readFileByBytes(filePath);
-            String imgStr = Base64Util.encode(imgData);
-            String imgParam = URLEncoder.encode(imgStr, "UTF-8");
-
-            String param = "image=" + imgParam;
-
-            // 注意这里仅为了简化编码每一次请求都去获取access_token，线上环境access_token有过期时间， 客户端可自行缓存，过期后重新获取。
-            String accessToken = token;
-
-            String result = HttpUtil.post(url, accessToken, param);
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 
 }

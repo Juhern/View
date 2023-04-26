@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -33,7 +34,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,6 +47,9 @@ public class Camera extends Activity {
     private String pathiden;
     private String resultden;
     private List<String> result = new LinkedList<>();
+    //弹窗显示
+    private AlertDialog mAlertDialog = null;
+
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
@@ -127,7 +130,8 @@ public class Camera extends Activity {
                 new Thread() {
                     @Override
                     public void run() {
-                        resultden = accurateBasic(uriden);
+                        ocrPost ocrpost = new ocrPost();
+                        resultden = ocrpost.accurateBasic(uriden);
                         /*处理返回的字符串*/
                         AlBean resultBean = new Gson().fromJson(resultden,AlBean.class);
                         System.out.println(resultBean.getWords_result());
@@ -136,6 +140,24 @@ public class Camera extends Activity {
                             result.add(pdf.getWords());
                         }
                         resultden = result.toString();
+                                                /*
+                        在不同的线程中处理返回的字符串，例如在一个异步任务中，需要确保在主线程中更新UI。
+                        可以使用runOnUiThread()方法来更新UI
+                        */
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+//                                 在主线程中更新UI
+                                final CustomDialog mDialog = new CustomDialog(Camera.this, "识别结果", resultden, "确定", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Toast.makeText(getApplicationContext(), "这是你的生成结果", Toast.LENGTH_SHORT).show();
+                                    }
+                                },"取消");
+                                mDialog.setCanceledOnTouchOutside(false);
+                                mDialog.show();
+                            }
+                        });
                         if (Build.VERSION.SDK_INT >= 23) {
                             int REQUEST_CODE_CONTACT = 101;
                             String[] permissions = {
@@ -148,7 +170,7 @@ public class Camera extends Activity {
                                     return;
                                 } else {
                                     FileLog fileLog = new FileLog();
-                                    fileLog.saveLog("报告", resultden, "安排");
+                                    fileLog.saveLog("报告", resultden, "识别结果");
                                     handler.sendEmptyMessage(0x123);
                                 }
                             }
@@ -219,13 +241,13 @@ public class Camera extends Activity {
             e.printStackTrace();
         }
 
-        // 其次把文件插入到系统图库
-        try {
+        // 其次把文件插入到系统图库——非必需
+/*        try {
             MediaStore.Images.Media.insertImage(getContentResolver(),
                     file.getAbsolutePath(), fileName, null);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
 
         //sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse(file.getAbsolutePath())));
         Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -235,35 +257,6 @@ public class Camera extends Activity {
         uriden = uri.getPath();
     }
 
-
-    /*识别方法*/
-    public String accurateBasic(String uripath) {
-        // 请求url
-        AccessToken accessToken1 = new AccessToken();
-        token = accessToken1.getAuth();
-
-
-        String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic";
-        try {
-            // 本地文件路径
-            String filePath = uripath;
-            byte[] imgData = FileUtil.readFileByBytes(filePath);
-            String imgStr = Base64Util.encode(imgData);
-            String imgParam = URLEncoder.encode(imgStr, "UTF-8");
-
-            String param = "image=" + imgParam;
-
-            // 注意这里仅为了简化编码每一次请求都去获取access_token，线上环境access_token有过期时间， 客户端可自行缓存，过期后重新获取。
-            String accessToken = token;
-
-            String result = HttpUtil.post(url, accessToken, param);
-            System.out.println(result);
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 
 }

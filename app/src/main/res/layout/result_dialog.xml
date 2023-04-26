@@ -26,8 +26,8 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:text="这个是标题"
-                android:textColor="#333333"
-                android:textSize="16sp"/>
+                android:textColor="#4169E1"
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/dialog_content"
@@ -36,7 +36,7 @@
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
                 android:gravity="center"
-                android:text="这个是标题"
+                android:text="这个是内容"
                 android:textColor="#333333"
                 android:textSize="15sp"/>
 
